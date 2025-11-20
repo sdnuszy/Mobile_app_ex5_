@@ -1,0 +1,63 @@
+<template>
+	<view class="content">
+		<view style="padding:12px 15px;background:#f0f0f0;font-size:14px;color:#555;">
+		      提交者：
+			  孙智毅
+		    </view>
+		<view class="uni-list">
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,index) in news" :key="index
+"@tap="openinfo" :data-newsid="item.post_id">
+				
+				<view class="uni-media-list">
+					<image class="uni-media-list-logo" :src="item.author_avatar"></image>
+					<view class="uni-media-list-body">
+						<view class="uni-media-list-text-top">{{item.title}}</view>
+						<view class="uni-media-list-text-bottom uni-ellipsis">{{item.created_at}}</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				news : []
+			};
+		},
+		onLoad:function(){
+			uni.showLoading({
+				title:"加载中... ..."
+			})
+			uni.request({
+				url: 'https://unidemo.dcloud.net.cn/api/news',
+				method: 'GET',
+				data: {},
+				success: res => {
+					console.log(res);
+					this.news=res.data;
+					uni.hideLoading();
+				},
+				fail: () => {},
+				complete: () => {}
+			});
+		},
+		methods:{
+			openinfo(e){
+				//console.log(e);
+				var newsid =e.currentTarget.dataset.newsid;
+				//console.log(newsid);
+				uni.navigateTo({
+					url: '../info/info?newsid='+newsid
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+	.uni-media-list-body{height: auto;}
+	.uni-media-list-text-top{line-height: 1.6em;}
+</style>
